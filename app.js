@@ -8,8 +8,9 @@ const fs = require("fs");
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
-const teamCard = [];
-const idEl = [];
+const render = require("./lib/htmlRenderer")
+const teamMember = [];
+const idArray = [];
 
 function appMenu() {
 
@@ -17,9 +18,9 @@ function appMenu() {
     console.log("Please build your team");
     inquirer.prompt([
       {
-        type: "input",
-        name: "managerName",
-        message: "What is your name?",
+      type: "input",
+      name: "managerName",
+      message: "What is your name?",
 
       },
       {
@@ -37,10 +38,10 @@ function appMenu() {
         name: "phoneNumber",
         message: "What is your office phone number?",
       }
-    ]).then(function (answers) {
+    ]).then(function(answers) {
       const manager = new Manager(answers.managerName, answers.managerId, answers.managerEmail, answers.phoneNumber);
-      teamCard.push(manager);
-      idEl.push(answers.managerId);
+      teamMember.push(manager);
+      idArray.push(answers.managerId);
       createTeam();
     });
   }
@@ -58,16 +59,16 @@ function appMenu() {
           "I don't want to add any more team members."
         ]
       }
-    ]).then(function (userChoice) {
-      switch (userChoice.memberChoice) {
-        case "Engineer":
-          addEngineer();
-          break;
-        case "Intern":
-          addIntern();
-          break;
-        default:
-          buildTeam();
+    ]).then(function(userChoice) {
+      switch(userChoice.memberChoice) {
+      case "Engineer":
+        addEngineer();
+        break;
+      case "Intern":
+        addIntern();
+        break;
+      default:
+        buildTeam();
       }
     });
   }
@@ -94,12 +95,12 @@ function appMenu() {
         name: "engineerUsername",
         message: "What is their GitHub username?",
       },
-    ]).then(function (answers) {
+    ]).then(function(answers) {
       const engineer = new Engineer(answers.engineerName, answers.engineerId, answers.engineerEmail, answers.engineerUsername);
 
-      teamCard.push(engineer);
+      teamMember.push(engineer);
 
-      idEl.push(answers.engineerId);
+      idArray.push(answers.engineerId);
 
       createTeam();
     });
@@ -128,13 +129,13 @@ function appMenu() {
         message: "What school did they attend?",
 
       },
-    ]).then(function (answers) {
+    ]).then(function(answers) {
       const intern = new Intern(answers.internName, answers.internId, answers.internEmail, answers.internSchool);
 
-      teamCard.push(intern);
+      teamMember.push(intern);
 
-      idEl.push(answers.internId);
-
+      idArray.push(answers.internId);
+      
       createTeam();
     });
   }
@@ -144,7 +145,7 @@ function appMenu() {
     if (!fs.existsSync(OUTPUT_DIR)) {
       fs.mkdirSync(OUTPUT_DIR)
     }
-    fs.writeFileSync(outputPath, render(teamCard), "utf-8");
+    fs.writeFileSync(outputPath, render(teamMember), "utf-8");
   }
 
   createManager();
